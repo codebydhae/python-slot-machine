@@ -1,5 +1,7 @@
 #global constant
 MAX_LINES  = 3
+MAX_BET = 100
+MIN_BET = 1
 
 #collect user input
 def deposit():
@@ -33,9 +35,33 @@ def get_number_of_lines():
             print("Please enter a valid number")
     return lines
 
+#amount to bet on each line
+def get_bet():
+    while True:
+        amount =  input("What are you betting on  each line ? ($" + str(MIN_BET) + " - $" + str(MAX_BET) + "): ")
+        if amount.isdigit():
+            amount = int(amount)
+            if MIN_BET <= amount <= MAX_BET:
+                break
+            else:
+                print("Please enter a valid amount between " + str(MIN_BET) + " and " + str(MAX_BET))
+        else:
+            print("Please enter a valid number")
+    return amount
+
 def main():    
     balance  = deposit()
     lines = get_number_of_lines()
-    print(balance, lines)
+    #Verify the bet amount is within limit of available balance
+    while True:
+        bet = get_bet()
+        total_bet = bet * lines
+        if total_bet > balance:
+            print(f"You do not have enough money to make that bet. Your current balance is ${balance}")
+        else:
+            break
+    total_bet = bet * lines
+    print(f"You are betting ${bet} on {lines} lines. Total bet: ${total_bet}")
+    #print(balance, lines)
 
 main()
