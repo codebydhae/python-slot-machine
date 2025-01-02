@@ -1,7 +1,60 @@
+#import modules
+import random
+
 #global constant
 MAX_LINES  = 3
 MAX_BET = 100
 MIN_BET = 1
+
+#specify rows n column
+ROWS =3
+COLS =3
+
+#specify symbols for each wheel (column)
+symbol_count = {
+    "A": 2,
+    "B": 4,
+    "C": 6,
+    "D": 8
+}
+
+#Generate outcome of bet according to symbols
+def get_slot_machine_spin(rows, cols, symbols):
+    all_symbols = []
+    #add symbols to list
+    for symbol, symbol_count in symbols.items():
+        for _ in range(symbol_count):
+            all_symbols.append(symbol)
+    #create a selection
+    # the nested list repersent each selection
+    columns = []
+    for _ in range(cols):
+        column = []
+        #copy list ":" so each column has its own selection
+        current_symbols = all_symbols[:]
+        for _ in range(rows):
+            #select value
+            value = random.choice(current_symbols)
+            current_symbols.remove(value)
+            #add value to column
+            column.append(value)
+
+        columns.append(column)
+
+    return columns
+
+#test and print
+def print_slot_machine(columns):
+    #transpose the format of our results
+    for row in range(len(columns[0])):
+        #point to first value of selection
+        for i, column in enumerate(columns):
+            if i != len(columns) - 1:
+                print(column[row], end=" | ")
+        else:
+            print(column[row])
+    print()
+    
 
 #collect user input
 def deposit():
@@ -63,5 +116,8 @@ def main():
     total_bet = bet * lines
     print(f"You are betting ${bet} on {lines} lines. Total bet: ${total_bet}")
     #print(balance, lines)
+
+    slots = get_slot_machine_spin(ROWS, COLS, symbol_count)
+    print_slot_machine(slots)
 
 main()
