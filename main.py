@@ -11,12 +11,34 @@ ROWS =3
 COLS =3
 
 #specify symbols for each wheel (column)
-symbol_count = {
-    "A": 2,
+symbol_value = {
+    "A": 5,
     "B": 4,
-    "C": 6,
-    "D": 8
+    "C": 3,
+    "D": 2
 }
+
+def check_winnings(columns, lines, bet, values):
+    winnings = 0
+    winning_lines = []
+    #look only thru lines that are betted on
+    for line in range(lines):
+        #check for first symbol in column
+        symbol = columns[0][line]
+        #loop thru every column and check for match
+        for column in columns:
+            symbol_to_check = column[line]
+            #if symbol is not a match
+            if symbol != symbol_to_check:
+                break
+        else:
+            #if all symbols are the same + user won the bet
+            #add the winnings
+            winnings += values[symbol] * bet
+            winning_lines.append(line + 1 )
+
+    return winnings, winning_lines
+
 
 #Generate outcome of bet according to symbols
 def get_slot_machine_spin(rows, cols, symbols):
@@ -102,8 +124,7 @@ def get_bet():
             print("Please enter a valid number")
     return amount
 
-def main():    
-    balance  = deposit()
+def spin(balance):
     lines = get_number_of_lines()
     #Verify the bet amount is within limit of available balance
     while True:
@@ -117,7 +138,24 @@ def main():
     print(f"You are betting ${bet} on {lines} lines. Total bet: ${total_bet}")
     #print(balance, lines)
 
-    slots = get_slot_machine_spin(ROWS, COLS, symbol_count)
+    slots = get_slot_machine_spin(ROWS, COLS, symbol_value)
     print_slot_machine(slots)
+    winnings, winning_lines = check_winnings(slots, lines, bet, symbol_value)
+    print(f"you won ${winnings}.")
+    print("you won on lines: ", *winning_lines)
+    return winnings - total_bet
 
+
+def main():    
+    balance  = deposit()
+    while True:
+        print(f"current balance is ${balance}")
+        answer = input("Press enter to play. q to quit")
+        if answer == "q":
+            break
+        balance += spin(balance)
+
+    print(f"You left with ${balance}")
+
+   
 main()
